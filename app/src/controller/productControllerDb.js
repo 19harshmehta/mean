@@ -21,20 +21,7 @@ module.exports.addProduct = function (req, res) {
     res.json({ "msg": "Product Added", "data": product, "rcode": 200 })
 }
 
-// //nodeJs -> singlethread -> async 
-// module.exports.getAllProducts = function(req,res){
-//   ProductModel.find(function(err,data){
-//     if(err){
-//         res.json({"msg":"SMW","rcode":-9,"data":err})
-//     }else{
-//         res.json({"msg":"Product list","data":data,"rcode":200})  
-//     }
-//   }) //     
-// //log --> print
 
-// }
-
-//nodeJs -> singlethread -> async 
 module.exports.getAllProducts = function (req, res) {
 
    // console.log(req.headers.token);
