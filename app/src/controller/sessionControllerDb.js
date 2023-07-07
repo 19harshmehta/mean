@@ -1,5 +1,7 @@
 const UserModel = require("../model/usersModel")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const usersModel = require("../model/usersModel")
 const {SEC_KEY} = process.env
 //signup 
 
@@ -12,6 +14,10 @@ module.exports.signup =  async function(req,res){
     //     email:req.body.email,
     //     password:req.body.password
     // })
+    let pass = req.body.password;
+    let enpass = bcrypt.hashSync(pass,10);
+    console.log("encrypted = ",enpass);
+    req.body.password = enpass; 
 
     let user = new UserModel(req.body) 
 
@@ -24,44 +30,26 @@ module.exports.signup =  async function(req,res){
 //login 
 module.exports.login = async function(req,res){
     
-    let email = req.body.email 
-    let password = req.body.password 
+  let email = req.body.email 
+  let password = req.body.password 
 
-    let user = await UserModel.findOne({email:email})
-    
-    if(user && user.password == password){
-            token = jwt.sign({"email":user.email,"userId":user._id,"role":"user"},SEC_KEY,{expiresIn:"60s"})
-             console.log("token "+token);
-             //update
-             console.log("og token",token);
-            
+  let user = await UserModel.findOne({email:email})
+  
+  if(user && bcrypt.compareSync(password,user.password)){
+           token = jwt.sign({ "authId":user._id,"authority":"user"},SEC_KEY,{expiresIn:"7d"})
+           console.log("token "+token);
+       
+           //update
+           res.json({data:user,msg:"Login done",rcode:200,token:token})
+  }else{      
+          res.json({data:req.body,msg:"Invalid Credentials",rcode:-9})
+  } 
+}
 
-             if (token) {
-                jwt.verify(token, SEC_KEY, (err, decoded) => {
-                  if (err) {
-                    // Token verification failed
-                    return res.status(401).json({ msg: 'Invalid token' });
-                  }
-            
-                  if (decoded.exp - Date.now() / 1000 < 86400) {
-                    console.log("in exp if");
-                    // Token is about to expire within 1 day (86400 seconds)
-                    const refreshedToken = jwt.sign(
-                      { email: decoded.email, userId: decoded.userId, role: decoded.role },
-                      SEC_KEY,
-                      { expiresIn: '5h' }
-                    );
-                    // res.setHeader('Authorization', refreshedToken); // Set the refreshed token in the response header
-                    console.log("rf token",refreshedToken);
-                    // res.json({data:decoded,msg:"Refresh token",rcode:200,rftoken:refreshedToken})
-                        
-                    res.json({data:user,msg:"Login done",rcode:200,token:token,rftoken:refreshedToken})
-                }
-                });
-              }
-    }else{      
-            res.json({data:req.body,msg:"Invalid Credentials",rcode:-9})
-    } 
+module.exports.getAllUsers = function(req,res){
+  usersModel.find().then(data=>{
+    res.json({data:data,msg:"user retrived",rcode:200})
+  })
 }
 
 
