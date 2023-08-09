@@ -24,6 +24,8 @@ app.use("/admin",authMiddlerware,productRoutes)
 app.use("/public",publicRoutes)
 app.post("/signup",sessionController.signup)
 app.get("/getallusers",sessionController.getAllUsers)
+app.delete("/deleteuser/:userId",sessionController.deleteUserById)
+
 
 
 app.listen(9999)

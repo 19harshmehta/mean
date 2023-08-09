@@ -53,3 +53,20 @@ module.exports.getAllUsers = function(req,res){
 }
 
 
+module.exports.deleteUserById = function deleteUserById(req,res)
+{
+    let userId = req.params.userId
+
+    console.log("UserID = ",userId)
+
+    UserModel.deleteOne({_id:userId}).then((data)=>{
+      res.json({ "msg":"Data Deleted" , "data":data , "rcode":200})
+    }).catch((err)=>{
+      res.json({ "msg":"No Rec Found" , "data":err , "rcode":-9})
+    })
+ 
+    
+    
+}
+
+
