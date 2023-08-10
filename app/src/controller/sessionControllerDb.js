@@ -69,4 +69,16 @@ module.exports.deleteUserById = function deleteUserById(req,res)
     
 }
 
+module.exports.getUserById = function getUserById(req,res)
+{
+    let userId = req.params.userId
+
+    UserModel.findById({_id:userId}).then((data)=>{
+      res.json({ "msg":"Data retrived" , "data":data , "rcode":200})
+    }).catch((err)=>{
+      res.json({ "msg":"No Rec Found" , "data":err , "rcode":-9})
+    })
+
+}
+
 
