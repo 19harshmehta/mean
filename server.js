@@ -26,6 +26,7 @@ app.post("/signup",sessionController.signup)
 app.get("/getallusers",sessionController.getAllUsers)
 app.delete("/deleteuser/:userId",sessionController.deleteUserById)
 app.get("/getuserbyid/:userId",sessionController.getUserById)
+app.put("/updateuser",sessionController.updateUser)
 
 
 

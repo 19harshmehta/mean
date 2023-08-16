@@ -82,3 +82,24 @@ module.exports.getUserById = function getUserById(req,res)
 }
 
 
+module.exports.updateUser = async function (req, res) 
+{
+
+
+  let user = await usersModel.findOne({ _id: req.body.userId })
+
+  console.log("user==> " + user);
+  if(req.body.firstName)
+  {
+    user.firstName = req.body.firstName
+  }
+  if(req.body.email)
+  {
+    user.email = req.body.email
+  }
+  console.log("new user==> " + user)
+  user = await user.save()
+  res.json({ "data": user, status: 200, msg: "user modified" })
+
+}
+
